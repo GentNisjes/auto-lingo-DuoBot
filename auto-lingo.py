@@ -777,7 +777,7 @@ def learn_bot():
         driver.get("https://www.duolingo.com/learn")
         skills = WebDriverWait(driver, 20).until(
             EC.presence_of_all_elements_located(
-                (By.XPATH, '//div[@data-test="skill"]'))
+                (By.XPATH, '//div[@data-test="skill-path"]'))
         )
 
         completed_skill = False
@@ -795,8 +795,8 @@ def learn_bot():
 
                 break
 
-            except WebDriverException:
-                pass
+            except WebDriverException as e:
+                exit(e)
 
             # search for g tag with grey circle fill
             # cannot search for skills with level < 5 because some skills cap at level 1
@@ -882,7 +882,8 @@ def main():
 
     global driver
 
-    service = ChromeService(executable_path=settings['chromedriver_path'])
+    # Path to chromedriver
+    service = ChromeService('C:/Program Files/chromedriver-win64/chromedriver.exe')
 
     driver = webdriver.Chrome(service=service, options=chrome_options)
 
