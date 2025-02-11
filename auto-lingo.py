@@ -835,10 +835,26 @@ def learn_bot():
 
                 for start_skill in all_elements:
                     start_exercise_btn = start_skill.find_element(By.XPATH,
-                                                                  '//button[@class="_1gEmM _7jW2t G_Z0K _3Jm09"]')
+                                                                  './/button[contains(@data-test, "skill-path-level")]')
                     print(start_exercise_btn.get_attribute("outerHTML"), "\n")
-
                     start_exercise_btn.click()
+
+                    # now we have the box pop up to start the actual lesson with the xp reward as text
+                    # next is to click on this button
+                    start_exercise_btn_xp = skill.find_element(By.XPATH, './/div[@class="_3zpnU _3OfAS _1o3g5 _2dBq4 _27rki"]')
+
+                    """
+                    now we still need to get the lesson number from the start_exercise_btn_xp element, and use that as an index/counter for a loop
+                    
+                    for index in range [first_retrieved_number, last_retrieved_number]:
+                    
+                    """
+
+                    # print((start_exercise_btn_xp.find_element(By.XPATH,'.//a[@data-test="skill-path-state-active skill-path-unit-test-0"]').click())("outerHTML"), "\n")
+                    start_exercise_btn_xp.find_element(By.XPATH,'.//a[@data-test="skill-path-state-active skill-path-unit-test-0"]').click()
+
+                    # ------------------------------ until here it works, now the complete skill part needs to be fixed -----------------------------------#
+
                     complete_skill()
                     completed_skill = True
 
