@@ -855,6 +855,8 @@ def learn_bot():
 
                     # ------------------------------ until here it works, now the complete skill part needs to be fixed -----------------------------------#
 
+                    # test comment
+
                     complete_skill()
                     completed_skill = True
 
