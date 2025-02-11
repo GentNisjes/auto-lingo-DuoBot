@@ -1,4 +1,4 @@
-import sys,os,time,json,argparse,random
+import sys, os, time, json, argparse, random
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -46,9 +46,6 @@ def exit(message=""):
 def get_settings():
     settings = {}
 
-
-
-
     try:
         path = os.path.dirname(__file__)
         with open(os.path.join(path, 'settings.json')) as json_f:
@@ -69,8 +66,6 @@ def get_settings():
 
 
 def get_credentials():
-
-
     try:
         path = os.path.dirname(__file__)
         with open(os.path.join(path, 'credentials.json')) as json_file:
@@ -134,20 +129,21 @@ def log_in(login, password):
     try:
         wait = WebDriverWait(driver, 25)
         wait.until(lambda driver: driver.current_url ==
-                   "https://www.duolingo.com/learn")
+                                  "https://www.duolingo.com/learn")
 
         print('Loggin in')
 
     except WebDriverException:
         exit("Timed out. Please login to Duolingo in time.")
 
+
 # this function is dedicated to all imbecils who put "Correct solution:" inside the solution itself
 
 def anti_imbecil_check(solution):
     return len(solution) > 17 and solution[0:17] == "Correct solution:"
 
-def task_tokens(tokens):
 
+def task_tokens(tokens):
     # I think this is where the solving happens
     done_list = []
 
@@ -169,15 +165,17 @@ def task_tokens(tokens):
                 done_list.append(j)
                 break
 
+
 def task_options(options):
     for option in options:
         try:
-            if(option.get_attribute('data-test')=='challenge-tap-token'):
+            if (option.get_attribute('data-test') == 'challenge-tap-token'):
                 challenge_match()
             else:
                 option.click()
         except WebDriverException:
             pass
+
 
 def challenge_select():
     sentence = driver.find_element(By.XPATH,
@@ -199,9 +197,11 @@ def challenge_select():
         dictionary[sentence] = solution
         # print(sentence, '-o->', dictionary[sentence])
 
+
 def challenge_speak_listen():
     skip = driver.find_element(By.XPATH, '//button[@data-test="player-skip"]')
     skip.click()
+
 
 def challenge_judge():
     sentence = driver.find_element(By.XPATH, '//div[@class="_3-JBe"]').text
@@ -222,6 +222,7 @@ def challenge_judge():
         dictionary[sentence] = solution.text
         # print(sentence, '-s->', dictionary[sentence])
 
+
 def challenge_form():
     sentence = driver.find_element(By.XPATH,
                                    '//div[@data-test="challenge-form-prompt"]').get_attribute('data-prompt')
@@ -241,6 +242,7 @@ def challenge_form():
                                        '//div[@class="_1UqAr _1sqiF"]')
         dictionary[sentence] = solution.text
         # print(sentence, '-x->', dictionary[sentence])
+
 
 def challenge_name():
     sentence = driver.find_element(By.XPATH,
@@ -267,6 +269,7 @@ def challenge_name():
 
         dictionary[sentence] = solution
         # print(sentence, '-+->', dictionary[sentence])
+
 
 def challenge_reverse_translation():
     sentence = driver.find_element(By.XPATH,
@@ -299,7 +302,7 @@ def challenge_reverse_translation():
 
         for i in range(len(input_text)):
             if input_text[i] != solution[i]:
-                solution = solution[i:i+diff_length]
+                solution = solution[i:i + diff_length]
                 changed = True
                 break
 
@@ -309,6 +312,7 @@ def challenge_reverse_translation():
 
         dictionary[sentence] = solution
         # print(sentence, '--->', dictionary[sentence])
+
 
 def challenge_translate():
     # static variable for choosing method of splitting tap tokens with apostrophe sign
@@ -338,9 +342,9 @@ def challenge_translate():
                 solution = solution.replace("-", " ")
 
             challenge_translate.apostrophe_counter = (
-                challenge_translate.apostrophe_counter + 1) % 2
+                                                             challenge_translate.apostrophe_counter + 1) % 2
             challenge_translate.dash_counter = (
-                challenge_translate.dash_counter + 1) % 4
+                                                       challenge_translate.dash_counter + 1) % 4
 
             words = solution.split(" ")
 
@@ -367,6 +371,7 @@ def challenge_translate():
         dictionary[sentence] = solution
         # print(sentence, '--->', dictionary[sentence])
 
+
 def challenge_tap_complete():
     # print("---> challenge_tap_complete")
     sentence_words = driver.find_elements(By.XPATH,
@@ -385,7 +390,7 @@ def challenge_tap_complete():
                 tap_token.click()
                 break
 
-    else: # this is when it can not quickly solve it.
+    else:  # this is when it can not quickly solve it.
         skip = driver.find_element(By.XPATH,
                                    '//button[@data-test="player-skip"]')
         # print(skip.text)
@@ -404,7 +409,7 @@ def challenge_tap_complete():
 
         for i in range(len(input_text)):
             if input_text[i] != solution[i]:
-                solution = solution[i:i+diff_length]
+                solution = solution[i:i + diff_length]
                 changed = True
                 break
 
@@ -414,6 +419,7 @@ def challenge_tap_complete():
 
         dictionary[sentence] = solution
         # print(sentence, '-q->', dictionary[sentence])
+
 
 def challenge_tap():
     # print("---> challenge_tap")
@@ -440,6 +446,7 @@ def challenge_tap():
         dictionary[sentence] = solution
         # print(sentence, '-ta->', dictionary[sentence])
 
+
 def challenge_dialogue_readcomp(isDial):
     if isDial:
         sentence = driver.find_element(By.XPATH,
@@ -464,6 +471,7 @@ def challenge_dialogue_readcomp(isDial):
         dictionary[sentence] = solution.text
         print(sentence, '-d->', dictionary[sentence])
 
+
 def challenge_gap():
     sentence = driver.find_element(By.XPATH,
                                    '//div[@class="_3Fi4A _2Hg6H"]').text
@@ -483,8 +491,8 @@ def challenge_gap():
         dictionary[sentence] = solution.text
         print(sentence, '-fg->', dictionary[sentence])
 
-def challenge_match():
 
+def challenge_match():
     tap_tokens = driver.find_elements(By.XPATH,
                                       '//button[@data-test="challenge-tap-token"]')
 
@@ -496,15 +504,17 @@ def challenge_match():
 
         for token2 in tap_tokens:
             token.click()
-            time.sleep(.5) # Click slower
-            if token2 in invalid_tokens or token2.get_attribute("aria-disabled") != None or token.get_attribute("disabled") != None:
+            time.sleep(.5)  # Click slower
+            if token2 in invalid_tokens or token2.get_attribute("aria-disabled") != None or token.get_attribute(
+                    "disabled") != None:
                 # This one has been tried, move on to the next instance of the loop
                 continue
             else:
                 invalid_tokens.append(token2)
                 # print(f"Two: {token2.text}")
-                time.sleep(.5) # Click slower
+                time.sleep(.5)  # Click slower
                 token2.click()
+
 
 def complete_story():
     start_story = WebDriverWait(driver, 20).until(
@@ -551,7 +561,7 @@ def complete_story():
                 # if did not find that task
                 if len(options) == 0:
                     continue
-                
+
                 if task == task_list[-1]:
                     task_tokens(options)
                     done_tokens = True
@@ -563,6 +573,7 @@ def complete_story():
     # close story tab and switch to main tab
     driver.close()
     driver.switch_to.window(driver.window_handles[0])
+
 
 def complete_skill(possible_skip_to_lesson=False):
     if possible_skip_to_lesson:
@@ -731,8 +742,8 @@ def complete_skill(possible_skip_to_lesson=False):
 
         time.sleep(1)
 
-def stories_bot():
 
+def stories_bot():
     print("📙 STORIES BOT")
 
     while True:
@@ -751,7 +762,6 @@ def stories_bot():
                 print(f"📖 Skipping {story_display[0]}")
                 continue
 
-            
             print(f"📙 Starting {story_display[0]}")
             driver.execute_script("arguments[0].scrollIntoView();", story)
             story.click()
@@ -771,36 +781,78 @@ def stories_bot():
 
             print(f"📙 Finishing {story_display[0]}")
 
+
 def learn_bot():
+    """
+    structure of logic:
+
+    1) get all the units and their elements inside of it
+    2) get all the "buttons"
+    3) check what lesson you'll be completing and set the length of a for loop based on that
+        -> click on the button to expand the button to get the "start lesson" button
+        -> execute the skill (complete_skill())
+    4) stay in the loop as long as there are lessons left to complete, else quit (for example if lesson fully completed -> instant to next lesson)
+    """
 
     while True:
         driver.get("https://www.duolingo.com/learn")
         skills = WebDriverWait(driver, 20).until(
             EC.presence_of_all_elements_located(
-                (By.XPATH, '//div[@data-test="skill-path"]'))
+                (By.XPATH, '//section[starts-with(@data-test, "skill-path-unit-")]'))
         )
+
+        for skill in skills:
+            print(skill.get_attribute("outerHTML"), "\n")
 
         completed_skill = False
 
         for skill in skills:
             try:
-                start_skill = skill.find_element(By.XPATH,
-                                                 '//a[@data-test="start-button"]')
-                start_skill.click()
-                complete_skill()
-                completed_skill = True
+                # Get all elements with class "R7x3_ _8Iu6E"
+                all_elements = skill.find_elements(By.XPATH,
+                                                   './/div[contains(@class, "R7x3_") and contains(@class, "_8Iu6E")]')
+                for element in all_elements:
+                    print("\n", element.get_attribute("outerHTML"), "\n")
 
-                if settings['antifarm_sleep'] > 0:
-                    time.sleep(settings['antifarm_sleep'])
+                # Get all elements that contain a child with aria-label="Chest"
+                chest_element = skill.find_element(By.XPATH, './/div[contains(@class, "R7x3_ _8Iu6E") and .//button[@aria-label="Chest"]]')
+                print("\n", chest_element.get_attribute("outerHTML"), "\n")
 
-                break
+                # Filter out elements that are in the chest_elements list
+                all_elements.remove(chest_element)
+
+                # Debugging: Print results
+                print(f"Total elements found: {len(all_elements)}")
+                # print(f"Elements containing 'Chest': {len(chest_element)}")
+                print(f"Filtered elements (without 'Chest'): {len(all_elements)}")
+
+                # # first get the skill fields
+                # start_skills = skill.find_elements(By.XPATH,
+                #                                    '//div[@class="R7x3_ _8Iu6E" and not(.//div[@aria-label="Chest"])]')
+
+                for start_skill in all_elements:
+                    print(start_skill.get_attribute("outerHTML"), "\n")
+
+                for start_skill in all_elements:
+                    start_exercise_btn = start_skill.find_element(By.XPATH,
+                                                                  '//button[@class="_1gEmM _7jW2t G_Z0K _3Jm09"]')
+                    print(start_exercise_btn.get_attribute("outerHTML"), "\n")
+
+                    start_exercise_btn.click()
+                    complete_skill()
+                    completed_skill = True
+
+                    if settings['antifarm_sleep'] > 0:
+                        time.sleep(settings['antifarm_sleep'])
+
+                    break
 
             except WebDriverException as e:
                 exit(e)
 
             # search for g tag with grey circle fill
             # cannot search for skills with level < 5 because some skills cap at level 1
-            try:                
+            try:
                 g_tag = skill.find_element(by=By.TAG_NAME, value='g')
             except WebDriverException:
                 continue
@@ -863,8 +915,8 @@ def learn_bot():
         if not completed_skill:
             break
 
-def main():
 
+def main():
     print("🏁 Starting out")
 
     global dictionary
@@ -900,6 +952,7 @@ def main():
 
     log_in(login, password)
 
+    time.sleep(5)
     if args.learn:
         learn_bot()
 
@@ -907,6 +960,7 @@ def main():
         stories_bot()
 
     exit("Auto-lingo finished.")
+
 
 if __name__ == "__main__":
     main()
