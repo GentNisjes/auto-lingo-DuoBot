@@ -953,6 +953,7 @@ def main():
     global driver
 
     # Path to chromedriver
+    # todo: make the chromedriver dynamically match the installed chromedriver version of the browser
     service = ChromeService('C:/Program Files/chromedriver-win64/chromedriver.exe')
 
     driver = webdriver.Chrome(service=service, options=chrome_options)
