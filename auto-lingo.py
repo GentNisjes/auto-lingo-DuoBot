@@ -42,7 +42,7 @@ def exit(message=""):
     driver.quit()
     sys.exit()
 
-
+# get the settings
 def get_settings():
     settings = {}
 
